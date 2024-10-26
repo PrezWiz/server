@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+
+jwt:
+  expiration_time: 86400000
+  secret: ${JWT_SECRET}
+
+kakao:
+  api_key: ${KAKAO_SECRET}
+  redirect_uri: ${KAKAO_REDIRECT}
+
+ai:
+  secret_key: ${GPT_SECRET}
+
+ppt:
+  file_path: ${FILE_PATH}
