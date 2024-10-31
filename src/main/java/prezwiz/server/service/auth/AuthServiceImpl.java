@@ -12,6 +12,7 @@ import prezwiz.server.dto.CustomUserInfoDto;
 import prezwiz.server.dto.request.LoginRequestDto;
 import prezwiz.server.dto.response.ResponseDto;
 import prezwiz.server.entity.Member;
+import prezwiz.server.exception.MemberNotFoundException;
 import prezwiz.server.repository.MemberRepository;
 import prezwiz.server.security.JwtUtil;
 
@@ -53,5 +54,15 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         ResponseDto responseDto = new ResponseDto("success", "로그인에 성공하였습니다.");
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(responseDto);
+    }
+
+    @Override
+    public ResponseDto withDraw(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> {
+            throw new MemberNotFoundException();
+        });
+
+        member.withdraw();
+        return ResponseDto.ok();
     }
 }

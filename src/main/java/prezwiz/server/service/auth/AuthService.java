@@ -9,4 +9,5 @@ import prezwiz.server.dto.response.ResponseDto;
  */
 public interface AuthService {
     ResponseEntity<ResponseDto> login(LoginRequestDto request);
+    ResponseDto withDraw(Long id);
 }

@@ -17,5 +17,11 @@ public class ResponseDto {
     }
 
     public ResponseDto() {
+        this.status = "200";
+        this.message = "success";
+    }
+
+    public static ResponseDto ok(){
+        return new ResponseDto();
     }
 }

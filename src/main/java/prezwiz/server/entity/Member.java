@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,6 +39,10 @@ public class Member {
     @Column
     private String role;
 
+    @ColumnDefault(value = "true")
+    @Column
+    private boolean isActive;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -49,4 +55,7 @@ public class Member {
         presentation.setMember(this);
     }
 
+    public void withdraw(){
+        this.isActive = false;
+    }
 }

@@ -39,6 +39,14 @@ public class MemberController {
     }
 
     /**
+     * 회원탈퇴
+     */
+    @DeleteMapping("/api/member/{id}")
+    public ResponseDto withdraw(@PathVariable Long id) {
+        return authService.withDraw(id);
+    }
+
+    /**
      * 카카오 로그인
      */
     @GetMapping("/api/kakaoauth")
