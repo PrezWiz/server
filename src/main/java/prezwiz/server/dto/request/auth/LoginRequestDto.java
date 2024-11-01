@@ -1,4 +1,4 @@
-package prezwiz.server.dto.request;
+package prezwiz.server.dto.request.auth;
 
 import lombok.Data;
 
