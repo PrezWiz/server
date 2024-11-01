@@ -58,4 +58,9 @@ public class Member {
     public void withdraw(){
         this.isActive = false;
     }
+
+    public void modifyPassword(String password){
+        if (!StringUtils.hasText(password)) throw new IllegalArgumentException("password must not empty");
+        this.password = password;
+    }
 }

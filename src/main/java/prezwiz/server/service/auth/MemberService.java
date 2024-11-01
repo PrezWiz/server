@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import prezwiz.server.dto.request.JoinRequestDto;
+import prezwiz.server.dto.request.auth.JoinRequestDto;
 import prezwiz.server.dto.response.ResponseDto;
 import prezwiz.server.entity.Member;
 import prezwiz.server.repository.MemberRepository;
