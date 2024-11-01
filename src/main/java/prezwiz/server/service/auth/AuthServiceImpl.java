@@ -9,9 +9,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import prezwiz.server.dto.CustomUserInfoDto;
-import prezwiz.server.dto.request.LoginRequestDto;
+import prezwiz.server.dto.request.auth.AuthDto;
+import prezwiz.server.dto.request.auth.LoginRequestDto;
 import prezwiz.server.dto.response.ResponseDto;
 import prezwiz.server.entity.Member;
+import prezwiz.server.exception.MemberNotFoundException;
 import prezwiz.server.repository.MemberRepository;
 import prezwiz.server.security.JwtUtil;
 
@@ -53,5 +55,34 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         ResponseDto responseDto = new ResponseDto("success", "로그인에 성공하였습니다.");
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(responseDto);
+    }
+
+    @Override
+    public ResponseDto withdraw(String email) {
+        Member member = memberRepository.findMemberByEmail(email);
+
+        if (member == null){
+            throw new MemberNotFoundException();
+        }
+
+        member.withdraw();
+        return ResponseDto.ok();
+    }
+
+    @Override
+    public ResponseDto modifyPassword(String email, AuthDto.ModifyPasswordReq dto) {
+        Member member = memberRepository.findMemberByEmail(email);
+
+        if (member == null){
+            throw new MemberNotFoundException();
+        }
+
+
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), member.getPassword())){
+            throw new IllegalArgumentException("password not matched");
+        }
+
+        member.modifyPassword(passwordEncoder.encode(dto.getNewPassword()));
+        return ResponseDto.ok();
     }
 }
