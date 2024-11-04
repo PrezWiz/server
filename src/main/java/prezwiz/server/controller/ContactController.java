@@ -1,5 +1,7 @@
 package prezwiz.server.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ public class ContactController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/contact")
+    @Operation(summary = "contact 메세지 처리")
     public ResponseEntity<ResponseDto> contact(@RequestHeader("authorization") String bearer, @RequestBody ContactMessageRequestDto request) {
         String email = jwtUtil.getEmail(bearer.substring(7));
         return contactService.handleMessage(email, request);
