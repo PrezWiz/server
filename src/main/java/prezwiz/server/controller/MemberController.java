@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import prezwiz.server.dto.request.auth.AuthDto;
@@ -50,8 +52,8 @@ public class MemberController {
      */
     @DeleteMapping("/member")
     @Operation(summary = "회원탈퇴")
-    public ResponseDto withdraw(@RequestHeader("authorization") String bearer) {
-        String email = jwtUtil.getEmail(bearer.substring(7));
+    public ResponseDto withdraw(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
         return authService.withdraw(email);
     }
 
@@ -60,9 +62,9 @@ public class MemberController {
      */
     @PatchMapping("/member/password")
     @Operation(summary = "비밀번호 수정")
-    public ResponseDto modifyPassword(@RequestHeader("authorization") String bearer,
+    public ResponseDto modifyPassword(@AuthenticationPrincipal UserDetails userDetails,
                                       @RequestBody AuthDto.ModifyPasswordReq dto) {
-        String email = jwtUtil.getEmail(bearer.substring(7));
+        String email = userDetails.getUsername();
         return authService.modifyPassword(email, dto);
     }
 
