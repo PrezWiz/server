@@ -56,4 +56,3 @@ jobs:
           script: |
             docker pull ${{ secrets.DOCKER_USERNAME }}/prezwiz-server:latest
             docker compose -f /home/ubuntu/server/compose.yml up --build -d
-
