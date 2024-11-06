@@ -53,5 +53,5 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/my-app:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/prezwiz-server:latest
             docker compose -f /home/ubuntu/server/compose.yml up --build -d
