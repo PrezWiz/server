@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t --platform linux/amd64 ${{ secrets.DOCKER_USERNAME }}/prezwiz-server:latest .
+        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/prezwiz-server:latest .
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/prezwiz-server:latest
