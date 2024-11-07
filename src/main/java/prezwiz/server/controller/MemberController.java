@@ -1,6 +1,7 @@
 package prezwiz.server.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +19,10 @@ import prezwiz.server.service.auth.AuthService;
 import prezwiz.server.service.auth.KaKaoAuthService;
 import prezwiz.server.service.auth.MemberService;
 
+@Tag(name="member", description = "member 관련 controller")
 @RestController
-@Slf4j
-@RequestMapping("/api")
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class MemberController {
 
     private final AuthService authService;

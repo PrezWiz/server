@@ -1,6 +1,7 @@
 package prezwiz.server.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -18,8 +19,8 @@ import prezwiz.server.service.prez.PrezService;
 
 import java.util.List;
 
+@Tag(name="slide", description="슬라이드 관련 controller")
 @RestController
-@Slf4j
 @RequiredArgsConstructor
 public class SlideController {
 

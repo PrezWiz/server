@@ -14,8 +14,8 @@ import prezwiz.server.security.JwtUtil;
 import prezwiz.server.service.contact.ContactService;
 
 
+@Tag(name="contact", description="contact message 를 처리하기위한 controller")
 @RestController
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class ContactController {
