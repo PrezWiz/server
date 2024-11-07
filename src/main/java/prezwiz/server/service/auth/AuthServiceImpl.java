@@ -1,5 +1,6 @@
 package prezwiz.server.service.auth;
 
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,7 +53,10 @@ public class AuthServiceImpl implements AuthService {
 
         ResponseCookie responseCookie = ResponseCookie.from("authorization", accessToken)
                 .path("/")
+                .httpOnly(true)
+                .maxAge(-1)
                 .build();
+
         ResponseDto responseDto = new ResponseDto("success", "로그인에 성공하였습니다.");
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(responseDto);
     }
