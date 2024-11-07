@@ -3,6 +3,7 @@ package prezwiz.server;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,6 +25,10 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/api/login", "/api/member"
+    };
+
+    private static final String[] WHITELIST = {
+            "/", "/swagger-ui/**", "/swagger-ui.html", "/api-docs", "/api-docs/**", "/v3/api-docs/**"
     };
 
     @Bean
@@ -50,9 +55,10 @@ public class SecurityConfig {
         );
         //권한 규칙 작성
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(AUTH_WHITELIST).permitAll()
+                .requestMatchers(HttpMethod.POST ,AUTH_WHITELIST).permitAll()
+                .requestMatchers(HttpMethod.GET, WHITELIST).permitAll()
                 //@PreAuthrization을 사용할 것이기 때문에 모든 경로에 대한 인증처리는 pass
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
         );
 
         return http.build();
