@@ -54,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
         ResponseCookie responseCookie = ResponseCookie.from("authorization", accessToken)
                 .path("/")
                 .httpOnly(true)
-                .maxAge(-1)
+                .maxAge(60 * 24 * 3)
                 .build();
 
         ResponseDto responseDto = new ResponseDto("success", "로그인에 성공하였습니다.");
