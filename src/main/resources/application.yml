@@ -10,7 +10,7 @@ spring:
       ddl-auto: update
 
 jwt:
-  expiration_time: 86400000
+  expiration_time: 259200000
   secret: ${JWT_SECRET}
 
 kakao:
