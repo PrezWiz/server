@@ -36,6 +36,8 @@ public class KaKaoAuthService {
     private String KAKAO_API_KEY;
     @Value("${kakao.redirect_uri}")
     private String REDIRECT_URI;
+    @Value("${service.client_uri}")
+    private String CLIENT_URI;
 
 
     public RedirectView kakaoAuth(String code, HttpServletResponse response) {
@@ -50,7 +52,7 @@ public class KaKaoAuthService {
         }
 
         addCookieToResponse(response, savedMember);
-        return new RedirectView("http://localhost:3000");
+        return new RedirectView(CLIENT_URI);
     }
 
     /**

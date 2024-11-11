@@ -13,6 +13,9 @@ jwt:
   expiration_time: 259200000
   secret: ${JWT_SECRET}
 
+service:
+  client_uri: ${CLIENT_URI}
+
 kakao:
   api_key: ${KAKAO_SECRET}
   redirect_uri: ${KAKAO_REDIRECT}
