@@ -1,4 +1,4 @@
-package prezwiz.server.util;
+package prezwiz.server.common.util;
 
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import prezwiz.server.dto.slide.SlideDto;

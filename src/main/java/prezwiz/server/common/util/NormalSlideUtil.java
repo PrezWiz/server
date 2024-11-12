@@ -1,4 +1,4 @@
-package prezwiz.server.util;
+package prezwiz.server.common.util;
 
 import org.apache.poi.xslf.usermodel.*;
 import org.springframework.stereotype.Component;
