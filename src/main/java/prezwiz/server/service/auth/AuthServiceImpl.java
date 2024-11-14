@@ -53,7 +53,6 @@ public class AuthServiceImpl implements AuthService {
 
         ResponseCookie responseCookie = ResponseCookie.from("authorization", accessToken)
                 .path("/")
-                .httpOnly(true)
                 .maxAge(60 * 60 * 24 * 30)
                 .build();
 
