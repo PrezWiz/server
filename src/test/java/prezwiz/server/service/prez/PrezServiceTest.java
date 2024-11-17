@@ -1,13 +1,12 @@
 package prezwiz.server.service.prez;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import prezwiz.server.dto.request.CreateRequestDto;
+import prezwiz.server.dto.request.SlideRequestDto;
 import prezwiz.server.dto.request.auth.JoinRequestDto;
 import prezwiz.server.dto.response.PresentationResponseDto;
 import prezwiz.server.dto.slide.prototype.PrototypeDto;
@@ -15,8 +14,6 @@ import prezwiz.server.service.auth.MemberService;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class PrezServiceTest {
@@ -53,7 +50,7 @@ class PrezServiceTest {
         prototypeDtoList.add(makePrototype(8L, "캡슐화", "캡슐화의 개념과 데이터 보호의 중요성에 대해 설명합니다."));
         prototypeDtoList.add(makePrototype(9L, "OOP의 장점", "객체지향 프로그래밍의 장점, 즉 코드의 유지보수성과 확장성에 대해 논의합니다."));
         prototypeDtoList.add(makePrototype(10L, "결론", "객체지향 프로그래밍의 중요성과 이점에 대한 요약을 제공합니다."));
-        CreateRequestDto requestDto = new CreateRequestDto();
+        SlideRequestDto requestDto = new SlideRequestDto();
         requestDto.setTopic("객체지향");
         requestDto.setSlides(prototypeDtoList);
 

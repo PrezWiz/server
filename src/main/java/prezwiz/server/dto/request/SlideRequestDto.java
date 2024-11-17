@@ -9,7 +9,7 @@ import java.util.List;
  * ppt와 대본을 만들어달라는 요청을 받기위한 requestDto
  */
 @Data
-public class CreateRequestDto {
+public class SlideRequestDto {
 
     private String topic;
     private List<PrototypeDto> slides;
