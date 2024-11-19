@@ -1,6 +1,5 @@
 package prezwiz.server.service.auth;
 
-import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,7 @@ import prezwiz.server.dto.request.auth.AuthDto;
 import prezwiz.server.dto.request.auth.LoginRequestDto;
 import prezwiz.server.dto.response.ResponseDto;
 import prezwiz.server.entity.Member;
-import prezwiz.server.exception.MemberNotFoundException;
+import prezwiz.server.common.exception.MemberNotFoundException;
 import prezwiz.server.repository.MemberRepository;
 import prezwiz.server.security.JwtUtil;
 

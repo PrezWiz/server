@@ -1,4 +1,4 @@
-package prezwiz.server.aop;
+package prezwiz.server.common.aop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,7 +14,7 @@ import org.springframework.util.StopWatch;
 @Component
 public class ExecutionTimer {
 
-    @Pointcut("@annotation(prezwiz.server.annotation.ExeTimer)")
+    @Pointcut("@annotation(prezwiz.server.common.annotation.ExeTimer)")
     private void timer() {}
 
     @Around("timer()")
