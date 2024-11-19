@@ -20,10 +20,12 @@ import prezwiz.server.service.prez.PrezService;
 public class SlideController {
 
     private final PrezService prezService;
-    private final JwtUtil jwtUtil;
 
     @PostMapping("/prototype")
-    @Operation(summary = "프로토타입 생성")
+    @Operation(summary = "프로토타입 생성",
+            description =
+                    "response json 에는 이후 요청을 위한 presentationId를 같이 반환합니다." +
+                    "\n 이후에 slide를 생성하거나, script를 생성할때 url경로에 같이 보내줘야 합니다.")
     public ResponseEntity<PrototypeResponseDto> createPrototype(@RequestBody CreateContentsRequestDto request) {
         PrototypeResponseDto responseDto = prezService.makePrototype(request.getTopic());
         return ResponseEntity.ok(responseDto);
