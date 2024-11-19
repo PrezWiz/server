@@ -1,9 +1,11 @@
 package prezwiz.server.service.contact;
 
-import io.netty.handler.codec.http.HttpHeaderValues;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,13 +16,14 @@ import prezwiz.server.entity.Contact;
 import prezwiz.server.entity.Member;
 import prezwiz.server.repository.ContactRepository;
 import prezwiz.server.repository.MemberRepository;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
+@Slf4j
 public class DiscordContactService implements ContactService {
 
+    private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
     private final ContactRepository contactRepository;
     private final String WEBHOOK_URI;
@@ -35,10 +38,13 @@ public class DiscordContactService implements ContactService {
                 "email : " + email + "\n" +
                 "message : " + message);
 
+        String json = discordRequestDtoToJson(discordRequest);
+        log.info(json);
+
         WebClient.create().post()
                 .uri(WEBHOOK_URI)
-                .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON.toString())
-                .body(Mono.just(discordRequest), DiscordRequestDto.class)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(json)
                 .retrieve();
 
         Member findMember = memberRepository.findMemberByEmail(email);
@@ -47,5 +53,13 @@ public class DiscordContactService implements ContactService {
 
         ResponseDto responseDto = new ResponseDto("success", "메세지를 전송했습니다. 확인후 등록된 이메일로 회신하겠습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    private String discordRequestDtoToJson(DiscordRequestDto discordRequestDto) {
+        try {
+            return objectMapper.writeValueAsString(discordRequestDto);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
