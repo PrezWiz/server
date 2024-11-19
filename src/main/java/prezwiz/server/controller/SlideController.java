@@ -45,6 +45,8 @@ public class SlideController {
         return ResponseEntity.ok(new ScriptResponseDto(script));
     }
 
+
+
 //    @PostMapping("/api/create")
 //    @Operation(summary = "프레젠테이션 생성")
 //    public ResponseEntity<PresentationResponseDto> createPresentation(@AuthenticationPrincipal UserDetails userDetails, @RequestBody CreateRequestDto requestDto) {
