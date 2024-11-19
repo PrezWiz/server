@@ -1,33 +1,46 @@
 package prezwiz.server.service.contact;
 
+import io.netty.handler.codec.http.HttpHeaderValues;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import prezwiz.server.dto.discord.DiscordRequestDto;
 import prezwiz.server.dto.request.ContactMessageRequestDto;
 import prezwiz.server.dto.response.ResponseDto;
 import prezwiz.server.entity.Contact;
 import prezwiz.server.entity.Member;
 import prezwiz.server.repository.ContactRepository;
 import prezwiz.server.repository.MemberRepository;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
-/**
- *  message를 DB에 저장하여 처리하는 방법, 이후에 변경 가능성 있음
- */
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
-public class DBContactService implements ContactService {
+public class DiscordContactService implements ContactService {
 
     private final MemberRepository memberRepository;
     private final ContactRepository contactRepository;
+    private final String WEBHOOK_URI;
 
     @Override
     @Transactional
     public ResponseEntity<ResponseDto> handleMessage(String email, ContactMessageRequestDto request) {
         String message = request.getMessage();
+
+        DiscordRequestDto discordRequest = new DiscordRequestDto();
+        discordRequest.setContent(
+                "email : " + email + "\n" +
+                "message : " + message);
+
+        WebClient.create().post()
+                .uri(WEBHOOK_URI)
+                .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON.toString())
+                .body(Mono.just(discordRequest), DiscordRequestDto.class)
+                .retrieve();
+
         Member findMember = memberRepository.findMemberByEmail(email);
         Contact contact = new Contact(message, findMember, LocalDateTime.now());
         contactRepository.save(contact);
