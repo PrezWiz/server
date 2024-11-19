@@ -1,11 +1,24 @@
 package prezwiz.server.service.prez;
 
-import prezwiz.server.dto.request.SlideRequestDto;
+import prezwiz.server.dto.response.PrototypeResponseDto;
 import prezwiz.server.dto.slide.SlidesDto;
 import prezwiz.server.dto.slide.prototype.PrototypesDto;
 
 public interface PrezService {
-    PrototypesDto makePrototypes(String topic);
-    SlidesDto makeSlides(String email, SlideRequestDto requestDto);
-    String makeScript(String email, SlidesDto slidesDto, Long presentationId);
+
+    // Create
+    PrototypeResponseDto makePrototype(String topic);
+    SlidesDto makeSlide(PrototypesDto prototypesDto, Long presentationId);
+    String makeScript(SlidesDto slidesDto, Long presentationId);
+
+    // Read
+    SlidesDto getSide(Long presentationId);
+    String getScript(Long presentationId);
+
+    // Update
+    void updateSlide(Long presentationId, SlidesDto slidesDto);
+    void updateScript(Long presentationId, String script);
+
+    // Delete
+    void deletePrez(Long presentationId);
 }

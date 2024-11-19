@@ -4,11 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import prezwiz.server.dto.response.ScriptResponseDto;
 import prezwiz.server.dto.request.CreateContentsRequestDto;
-import prezwiz.server.dto.request.SlideRequestDto;
+import prezwiz.server.dto.response.PrototypeResponseDto;
 import prezwiz.server.dto.slide.SlidesDto;
 import prezwiz.server.dto.slide.prototype.PrototypesDto;
 import prezwiz.server.security.JwtUtil;
@@ -25,25 +24,23 @@ public class SlideController {
 
     @PostMapping("/prototype")
     @Operation(summary = "프로토타입 생성")
-    public ResponseEntity<PrototypesDto> createPrototype(@RequestBody CreateContentsRequestDto request) {
-        PrototypesDto prototypesDto = prezService.makePrototypes(request.getTopic());
-        return ResponseEntity.ok(prototypesDto);
+    public ResponseEntity<PrototypeResponseDto> createPrototype(@RequestBody CreateContentsRequestDto request) {
+        PrototypeResponseDto responseDto = prezService.makePrototype(request.getTopic());
+        return ResponseEntity.ok(responseDto);
     }
 
-    @PostMapping("/slides")
+    @PostMapping("/slides/{presentationId}")
     @Operation(summary = "슬라이드 생성")
-    public ResponseEntity<SlidesDto> createSlides(@AuthenticationPrincipal UserDetails userDetails, @RequestBody SlideRequestDto requestDto) {
-        String email = userDetails.getUsername();
-        SlidesDto slidesDto = prezService.makeSlides(email, requestDto);
+    public ResponseEntity<SlidesDto> createSlides(@RequestBody PrototypesDto prototypesDto, @PathVariable("presentationId") Long id) {
+        SlidesDto slidesDto = prezService.makeSlide(prototypesDto, id);
         return ResponseEntity.ok(slidesDto);
     }
 
     @PostMapping("/script/{presentationId}")
     @Operation(summary = "대본 생성")
-    public ResponseEntity<String> createScript(@AuthenticationPrincipal UserDetails userDetails, @RequestBody SlidesDto slidesDto, @PathVariable("presentationId") Long id) {
-        String email = userDetails.getUsername();
-        String script = prezService.makeScript(email, slidesDto, id);
-        return ResponseEntity.ok(script);
+    public ResponseEntity<ScriptResponseDto> createScript(@RequestBody SlidesDto slidesDto, @PathVariable("presentationId") Long id) {
+        String script = prezService.makeScript(slidesDto, id);
+        return ResponseEntity.ok(new ScriptResponseDto(script));
     }
 
 //    @PostMapping("/api/create")

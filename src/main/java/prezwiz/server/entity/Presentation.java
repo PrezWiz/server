@@ -15,10 +15,8 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Presentation {
 
-    public Presentation(String topic, String pptLocation, String scriptLocation) {
+    public Presentation(String topic) {
         this.topic = topic;
-        this.pptLocation = pptLocation;
-        this.scriptLocation = scriptLocation;
     }
 
     @Id
@@ -29,11 +27,13 @@ public class Presentation {
     @Column
     private String topic;
 
-    @Column
-    private String pptLocation;
+    @OneToOne
+    @JoinColumn(name = "SCRIPT_ID")
+    private Script script;
 
-    @Column
-    private String scriptLocation;
+    @OneToOne
+    @JoinColumn(name = "SLIDES_ID")
+    private Slides slides;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,4 +42,12 @@ public class Presentation {
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    public void addSlides(Slides slides) {
+        this.slides = slides;
+    }
+
+    public void addScript(Script script) {
+        this.script = script;
+    }
 }
