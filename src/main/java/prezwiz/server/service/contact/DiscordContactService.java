@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 @Slf4j
 public class DiscordContactService implements ContactService {
 
-    private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
     private final ContactRepository contactRepository;
     private final String WEBHOOK_URI;
@@ -38,14 +37,13 @@ public class DiscordContactService implements ContactService {
                 "email : " + email + "\n" +
                 "message : " + message);
 
-        String json = discordRequestDtoToJson(discordRequest);
-        log.info(json);
-
         WebClient.create().post()
                 .uri(WEBHOOK_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(json)
-                .retrieve();
+                .bodyValue(discordRequest)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
 
         Member findMember = memberRepository.findMemberByEmail(email);
         Contact contact = new Contact(message, findMember, LocalDateTime.now());
@@ -53,13 +51,5 @@ public class DiscordContactService implements ContactService {
 
         ResponseDto responseDto = new ResponseDto("success", "메세지를 전송했습니다. 확인후 등록된 이메일로 회신하겠습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
-    }
-
-    private String discordRequestDtoToJson(DiscordRequestDto discordRequestDto) {
-        try {
-            return objectMapper.writeValueAsString(discordRequestDto);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
