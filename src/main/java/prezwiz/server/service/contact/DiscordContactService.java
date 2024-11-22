@@ -30,7 +30,7 @@ public class DiscordContactService implements ContactService {
     private final ContactRepository contactRepository;
 
     @Value("${web_hook.contact}")
-    private final String WEBHOOK_URI;
+    private String WEBHOOK_URI;
 
     @Override
     @Transactional

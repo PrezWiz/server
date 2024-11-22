@@ -9,7 +9,7 @@ public interface PrezService {
     Long makeTable();
 
     // Create
-    PrototypeResponseDto makeOutline(String topic, Long presentationId);
+    PrototypesDto makeOutline(String topic, Long presentationId);
     SlidesDto makeSlide(PrototypesDto prototypesDto, Long presentationId);
     String makeScript(SlidesDto slidesDto, Long presentationId);
 

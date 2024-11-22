@@ -13,6 +13,7 @@ import prezwiz.server.dto.slide.prototype.PrototypesDto;
 import prezwiz.server.entity.*;
 import prezwiz.server.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,7 @@ public class PrezServiceImpl implements PrezService {
 
     @Override
     @Transactional
-    public PrototypeResponseDto makeOutline(String topic, Long presentationId) {
+    public PrototypesDto makeOutline(String topic, Long presentationId) {
         PrototypesDto prototypes = gptUtil.getPrototypes(topic);
 
         Optional<Presentation> presentationOptional = presentationRepository.findById(presentationId);
@@ -48,7 +49,7 @@ public class PrezServiceImpl implements PrezService {
         presentation.setMember(getCurrentUser());
         presentationRepository.save(presentation);
 
-        return new PrototypeResponseDto(presentation.getId(), prototypes);
+        return prototypes;
     }
 
     @Override
@@ -88,10 +89,11 @@ public class PrezServiceImpl implements PrezService {
 
         Slides slides = presentation.getSlides();
         SlidesDto slidesDto = new SlidesDto();
-        List<SlideDto> slidesListDto = slidesDto.getSlides();
+        List<SlideDto> slideDtoList = new ArrayList<>();
         slides.getSlideList().forEach(slide -> {
-            slidesListDto.add(new SlideDto(slide.getTitle(), slide.getContent()));
+            slideDtoList.add(new SlideDto(slide.getTitle(), slide.getContent()));
         });
+        slidesDto.setSlides(slideDtoList);
         return slidesDto;
     }
 
@@ -110,12 +112,13 @@ public class PrezServiceImpl implements PrezService {
 
         Slides newSlides = new Slides();
         List<Slide> newSlideList = newSlides.getSlideList();
+        slidesRepository.save(newSlides);
         slidesDto.getSlides().forEach(slideDto -> {
             Slide slide = new Slide(slideDto.getTitle(), slideDto.getContent());
+            slide.setSlides(newSlides);
             newSlideList.add(slide);
             slideRepository.save(slide);
         });
-        slidesRepository.save(newSlides);
         presentation.updateSlides(newSlides);
     }
 

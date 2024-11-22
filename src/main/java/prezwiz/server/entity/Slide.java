@@ -31,11 +31,6 @@ public class Slide {
 
     public void setSlides(Slides slides) {
         this.slides = slides;
-
-        //무한루프에 빠지지 않기위한 if
-        if (!slides.getSlideList().contains(this)) {
-            slides.getSlideList().add(this);
-        }
     }
 
 }

@@ -6,7 +6,7 @@ import lombok.Data;
  * slide구성을 만들어달라고 하기위한 requestDto
  */
 @Data
-public class CreateOutlineRequsetDto {
+public class CreateOutlineRequestDto {
 
     private String topic;
 }

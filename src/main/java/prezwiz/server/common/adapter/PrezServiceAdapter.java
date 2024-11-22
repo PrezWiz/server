@@ -13,6 +13,7 @@ import prezwiz.server.dto.slide.prototype.PrototypeDto;
 import prezwiz.server.dto.slide.prototype.PrototypesDto;
 import prezwiz.server.service.prez.PrezService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -25,31 +26,32 @@ public class PrezServiceAdapter {
 
         // table 생성
         Long presentationId = prezService.makeTable();
+        PrototypesDto prototypesDto = prezService.makeOutline(topic, presentationId);
 
-
-        PrototypeResponseDto prototypeResponseDto = prezService.makeOutline(topic, presentationId);
-        PrototypesDto prototypesDto = prototypeResponseDto.getPrototypesDto();
         OutlineResponseDto outlineResponseDto = new OutlineResponseDto();
-        outlineResponseDto.setPresentationId(presentationId);
-        List<OutlineDto> outlines = outlineResponseDto.getOutlines();
+        List<OutlineDto> outlines = new ArrayList<>();
+
         prototypesDto.getSlides().forEach(
                 prototypeDto -> {
                     outlines.add(new OutlineDto(prototypeDto.getSlideNumber(), prototypeDto.getTitle(), prototypeDto.getTitle()));
                 }
         );
 
+        outlineResponseDto.setPresentationId(presentationId);
+        outlineResponseDto.setOutlines(outlines);
         return outlineResponseDto;
     }
 
     public SlidesDto slide(OutlinesDto outlinesDto, Long presentationId) {
 
         PrototypesDto prototypesDto = new PrototypesDto();
-        List<PrototypeDto> prototypes = prototypesDto.getSlides();
+        List<PrototypeDto> prototypes = new ArrayList<>();
 
         List<OutlineDto> outlines = outlinesDto.getOutlines();
         outlines.forEach(outline -> {
             prototypes.add(new PrototypeDto(outline.getOutlineNumber(), outline.getTitle(), outline.getDescription()));
         });
+        prototypesDto.setSlides(prototypes);
         return prezService.makeSlide(prototypesDto, presentationId);
     }
 
