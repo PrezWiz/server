@@ -1,15 +1,14 @@
-package prezwiz.server.dto.slide;
+package prezwiz.server.dto.slide.outline;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SlideDto {
-
-    private String title;
-    private String content;
-
+public class OutlinesDto {
+    private List<OutlineDto> outlines;
 }

@@ -25,3 +25,7 @@ ai:
 
 ppt:
   file_path: ${FILE_PATH}
+
+web_hook:
+  contact: ${CONTACT_WEBHOOK_URI}
+
