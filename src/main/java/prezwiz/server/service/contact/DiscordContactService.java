@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import prezwiz.server.dto.discord.DiscordRequestDto;
@@ -19,12 +21,15 @@ import prezwiz.server.repository.MemberRepository;
 
 import java.time.LocalDateTime;
 
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class DiscordContactService implements ContactService {
 
     private final MemberRepository memberRepository;
     private final ContactRepository contactRepository;
+
+    @Value("${web_hook.contact}")
     private final String WEBHOOK_URI;
 
     @Override
