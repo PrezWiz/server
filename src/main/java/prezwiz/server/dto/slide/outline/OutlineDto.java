@@ -1,4 +1,4 @@
-package prezwiz.server.dto.slide.prototype;
+package prezwiz.server.dto.slide.outline;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -8,11 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PrototypeDto {
+public class OutlineDto {
 
-    @JsonProperty("slide_number")
-    private Long slideNumber;
+    @JsonProperty("outline_number")
+    private Long outlineNumber;
     private String title;
     private String description;
-
 }

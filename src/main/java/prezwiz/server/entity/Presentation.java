@@ -43,11 +43,24 @@ public class Presentation {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    // add method의 경우 초기에 한번만 사용함
     public void addSlides(Slides slides) {
         this.slides = slides;
     }
 
     public void addScript(Script script) {
         this.script = script;
+    }
+
+    public void addTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public void updateSlides(Slides newSlides) {
+        this.slides = newSlides;
+    }
+
+    public void updateScript(Script newScript) {
+        this.script = newScript;
     }
 }
