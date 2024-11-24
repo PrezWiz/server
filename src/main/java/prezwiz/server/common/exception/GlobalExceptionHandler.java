@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
     ErrorResponse errorResponse = new ErrorResponse(
         e.getMessage(),
-        "x400"
+        "4000"
     );
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
   }
