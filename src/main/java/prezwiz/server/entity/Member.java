@@ -23,6 +23,8 @@ public class Member {
         this.email = email;
         this.password = password;
         this.role = role;
+
+        this.isActive = true;
     }
 
     @Id
@@ -39,7 +41,6 @@ public class Member {
     @Column
     private String role;
 
-    @ColumnDefault(value = "true")
     @Column
     private boolean isActive;
 

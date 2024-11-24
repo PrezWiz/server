@@ -28,7 +28,6 @@ public class MemberController {
     private final AuthService authService;
     private final KaKaoAuthService kaKaoAuthService;
     private final MemberService memberService;
-    private final JwtUtil jwtUtil;
 
     /**
      * 회원가입
