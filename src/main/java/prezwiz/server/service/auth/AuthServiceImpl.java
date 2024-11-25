@@ -37,14 +37,17 @@ public class AuthServiceImpl implements AuthService {
 
         // 요청한 이메일과 같은 유저가 존재하는지 확인
         if (member == null) {
-            ResponseDto responseDto = new ResponseDto("fail", "유저를 찾을수 없습니다.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
+            throw new MemberNotFoundException();
+        }
+
+        // 탈퇴한 회원일 경우 로그인을 진행할수 없음 -> MemberNotFoundException;
+        if (!member.isActive()) {
+            throw new MemberNotFoundException();
         }
 
         // 요청한 암호와 실제 암호가 같은지 확인
         if (!passwordEncoder.matches(password, member.getPassword())) {
-            ResponseDto responseDto = new ResponseDto("fail", "비밀번호가 일치하지 않습니다.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
+            throw new IllegalArgumentException("password not matched");
         }
 
         CustomUserInfoDto info = new CustomUserInfoDto(member.getId(), member.getEmail(), member.getPassword(), member.getRole());

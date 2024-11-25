@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import prezwiz.server.common.adapter.PrezServiceAdapter;
 import prezwiz.server.dto.request.CreateOutlineRequestDto;
 import prezwiz.server.dto.response.OutlineResponseDto;
+import prezwiz.server.dto.response.PresentationsResponseDto;
 import prezwiz.server.dto.response.ScriptResponseDto;
 import prezwiz.server.dto.slide.SlidesDto;
 import prezwiz.server.dto.slide.outline.OutlinesDto;
@@ -55,5 +56,12 @@ public class SlideControllerV2 {
     public ResponseEntity<ScriptResponseDto> createAndGetScript(@RequestBody SlidesDto slidesDto, @PathVariable("presentationId") Long id) {
         ScriptResponseDto scriptResponse = prezServiceAdapter.getScript(slidesDto, id);
         return ResponseEntity.ok(scriptResponse);
+    }
+
+    @GetMapping("/store")
+    @Operation(summary = "모든 슬라이드 정보 가져오기")
+    public ResponseEntity<PresentationsResponseDto> getPresentation() {
+        PresentationsResponseDto presentations = prezServiceAdapter.getSlides();
+        return ResponseEntity.ok(presentations);
     }
 }
