@@ -2,10 +2,9 @@ package prezwiz.server.common.adapter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import prezwiz.server.dto.response.PresentationsResponseDto;
 import prezwiz.server.dto.response.OutlineResponseDto;
-import prezwiz.server.dto.response.PrototypeResponseDto;
 import prezwiz.server.dto.response.ScriptResponseDto;
-import prezwiz.server.dto.slide.SlideDto;
 import prezwiz.server.dto.slide.SlidesDto;
 import prezwiz.server.dto.slide.outline.OutlineDto;
 import prezwiz.server.dto.slide.outline.OutlinesDto;
@@ -67,5 +66,9 @@ public class PrezServiceAdapter {
 
     public SlidesDto getSlide(Long id) {
         return prezService.getSlide(id);
+    }
+
+    public PresentationsResponseDto getSlides() {
+        return prezService.getPresentations();
     }
 }

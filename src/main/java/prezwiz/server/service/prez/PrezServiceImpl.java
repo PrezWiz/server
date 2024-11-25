@@ -6,6 +6,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import prezwiz.server.common.util.GptUtil;
+import prezwiz.server.dto.response.PresentationResponseDto;
+import prezwiz.server.dto.response.PresentationsResponseDto;
 import prezwiz.server.dto.response.PrototypeResponseDto;
 import prezwiz.server.dto.slide.SlideDto;
 import prezwiz.server.dto.slide.SlidesDto;
@@ -16,6 +18,7 @@ import prezwiz.server.repository.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -103,6 +106,17 @@ public class PrezServiceImpl implements PrezService {
 
         Script script = presentation.getScript();
         return script.getContent();
+    }
+
+    @Override
+    public PresentationsResponseDto getPresentations() {
+        Member currentUser = getCurrentUser();
+        List<Presentation> presentations = currentUser.getPresentations();
+        List<PresentationResponseDto> presentationResponseDtoList =
+                presentations.stream().map(
+                        presentation -> new PresentationResponseDto(presentation.getId(), presentation.getTopic(), presentation.getCreatedAt())
+                        ).toList();
+        return new PresentationsResponseDto(presentationResponseDtoList);
     }
 
     @Override
