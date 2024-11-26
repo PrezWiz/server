@@ -5,6 +5,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import prezwiz.server.common.exception.BizBaseException;
+import prezwiz.server.common.exception.ErrorCode;
 import prezwiz.server.common.util.GptUtil;
 import prezwiz.server.dto.response.PresentationResponseDto;
 import prezwiz.server.dto.response.PresentationsResponseDto;
@@ -46,7 +48,7 @@ public class PrezServiceImpl implements PrezService {
         PrototypesDto prototypes = gptUtil.getPrototypes(topic);
 
         Optional<Presentation> presentationOptional = presentationRepository.findById(presentationId);
-        Presentation presentation = presentationOptional.orElseThrow(() -> new IllegalStateException("존재하지 않는 presentation 입니다."));
+        Presentation presentation = presentationOptional.orElseThrow(() -> new BizBaseException(ErrorCode.PRESENTATION_NOT_FOUND));
 
         presentation.addTopic(topic);
         presentation.setMember(getCurrentUser());
@@ -158,10 +160,10 @@ public class PrezServiceImpl implements PrezService {
     private Presentation getMyPresentation(Long presentationId) {
         Optional<Presentation> presentationOptional = presentationRepository.findById(presentationId);
 
-        Presentation presentation = presentationOptional.orElseThrow(() -> new IllegalStateException("존재하지 않는 presentationId 입니다."));
+        Presentation presentation = presentationOptional.orElseThrow(() -> new BizBaseException(ErrorCode.PRESENTATION_NOT_FOUND));
         Member currentUser = getCurrentUser();
         if (presentation.getMember().getId() != currentUser.getId()) {
-            throw new IllegalStateException("본인의 presentation이 아닙니댜.");
+            throw new BizBaseException(ErrorCode.AUTH_INVALID_ACCESS_TOKEN);
         }
         return presentation;
     }
