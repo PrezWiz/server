@@ -48,8 +48,10 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(BizBaseException.class)
   public ResponseEntity handleBizException(BizBaseException e) {
-    log.error("[Exception] cause: {} , message: {}", NestedExceptionUtils.getMostSpecificCause(e),
-        e.getMessage());
+    log.error("[Exception] cause: {} , code : {} , message: {}",
+            NestedExceptionUtils.getMostSpecificCause(e),
+            e.getCode(),
+            e.getMsg());
 
     ErrorResponse errorResponse = new ErrorResponse(
         e.getMsg(),

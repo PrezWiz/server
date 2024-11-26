@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import prezwiz.server.common.exception.BizBaseException;
+import prezwiz.server.common.exception.ErrorCode;
 import prezwiz.server.dto.request.auth.JoinRequestDto;
 import prezwiz.server.dto.response.ResponseDto;
 import prezwiz.server.entity.Member;
@@ -38,12 +40,10 @@ public class MemberService {
 
         if (isNull(email, password)) {
             log.error("잘못된 요청");
-            ResponseDto responseDto = new ResponseDto("fail", "잘못된 요청입니다.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+            throw new BizBaseException(ErrorCode.INVALID_VALUE);
         } else if (isEmailDuplicate(email)) {
             log.error("중복 이메일");
-            ResponseDto responseDto = new ResponseDto("fail", "중복된 이메일 입니다.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+            throw new BizBaseException(ErrorCode.INVALID_VALUE);
         } else {
             String memberRole = role == null ? "user" : role;
             Member member = new Member(email, encoder.encode(password), memberRole);

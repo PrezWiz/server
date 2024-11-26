@@ -8,12 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import prezwiz.server.common.exception.BizBaseException;
+import prezwiz.server.common.exception.ErrorCode;
 import prezwiz.server.dto.CustomUserInfoDto;
 import prezwiz.server.dto.request.auth.AuthDto;
 import prezwiz.server.dto.request.auth.LoginRequestDto;
 import prezwiz.server.dto.response.ResponseDto;
 import prezwiz.server.entity.Member;
-import prezwiz.server.common.exception.MemberNotFoundException;
 import prezwiz.server.repository.MemberRepository;
 import prezwiz.server.security.JwtUtil;
 
@@ -37,17 +38,17 @@ public class AuthServiceImpl implements AuthService {
 
         // 요청한 이메일과 같은 유저가 존재하는지 확인
         if (member == null) {
-            throw new MemberNotFoundException();
+            throw new BizBaseException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
         // 탈퇴한 회원일 경우 로그인을 진행할수 없음 -> MemberNotFoundException;
         if (!member.isActive()) {
-            throw new MemberNotFoundException();
+            throw new BizBaseException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
         // 요청한 암호와 실제 암호가 같은지 확인
         if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new IllegalArgumentException("password not matched");
+            throw new BizBaseException(ErrorCode.PASSWORD_NOT_MATCH);
         }
 
         CustomUserInfoDto info = new CustomUserInfoDto(member.getId(), member.getEmail(), member.getPassword(), member.getRole());
@@ -67,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
         Member member = memberRepository.findMemberByEmail(email);
 
         if (member == null){
-            throw new MemberNotFoundException();
+            throw new BizBaseException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
         member.withdraw();
@@ -79,7 +80,7 @@ public class AuthServiceImpl implements AuthService {
         Member member = memberRepository.findMemberByEmail(email);
 
         if (member == null){
-            throw new MemberNotFoundException();
+            throw new BizBaseException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
 
