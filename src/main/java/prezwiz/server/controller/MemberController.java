@@ -10,6 +10,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
+import prezwiz.server.common.annotation.ApiErrorCodeExample;
+import prezwiz.server.common.exception.ErrorCode;
 import prezwiz.server.dto.request.auth.AuthDto;
 import prezwiz.server.dto.request.auth.JoinRequestDto;
 import prezwiz.server.dto.request.auth.LoginRequestDto;
@@ -34,6 +36,11 @@ public class MemberController {
      */
     @PostMapping("/member")
     @Operation(summary = "회원가입")
+    @ApiErrorCodeExample({
+            ErrorCode.CONFLICT_EXIST_EMAIL,
+            ErrorCode.EMPTY_EMAIL_OR_PASSWORD,
+            ErrorCode.INVALID_EMAIL_FORMAT,
+            ErrorCode.INVALID_PASSWORD_FORMAT})
     public ResponseEntity<ResponseDto> join(@RequestBody JoinRequestDto request) {
         return memberService.saveMember(request);
     }
@@ -43,6 +50,7 @@ public class MemberController {
      */
     @PostMapping("/login")
     @Operation(summary = "로그인")
+    @ApiErrorCodeExample({ErrorCode.MEMBER_NOT_FOUND, ErrorCode.PASSWORD_NOT_MATCH})
     public ResponseEntity<ResponseDto> login(@RequestBody LoginRequestDto request) {
         return authService.login(request);
     }
@@ -52,6 +60,7 @@ public class MemberController {
      */
     @DeleteMapping("/member")
     @Operation(summary = "회원탈퇴")
+    @ApiErrorCodeExample({ErrorCode.MEMBER_NOT_FOUND})
     public ResponseDto withdraw(@AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
         return authService.withdraw(email);
@@ -62,6 +71,7 @@ public class MemberController {
      */
     @PatchMapping("/member/password")
     @Operation(summary = "비밀번호 수정")
+    @ApiErrorCodeExample({ErrorCode.MEMBER_NOT_FOUND, ErrorCode.PASSWORD_NOT_MATCH})
     public ResponseDto modifyPassword(@AuthenticationPrincipal UserDetails userDetails,
                                       @RequestBody AuthDto.ModifyPasswordReq dto) {
         String email = userDetails.getUsername();
@@ -74,6 +84,7 @@ public class MemberController {
      */
     @GetMapping("/kakaoauth")
     @Operation(summary = "카카오 로그인")
+    @ApiErrorCodeExample({ErrorCode.INVALID_VALUE})
     public RedirectView kakaoLogin(@RequestParam String code, HttpServletResponse response) {
         return kaKaoAuthService.kakaoAuth(code, response);
     }

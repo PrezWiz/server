@@ -85,7 +85,7 @@ public class AuthServiceImpl implements AuthService {
 
 
         if (!passwordEncoder.matches(dto.getCurrentPassword(), member.getPassword())){
-            throw new IllegalArgumentException("password not matched");
+            throw new BizBaseException(ErrorCode.PASSWORD_NOT_MATCH);
         }
 
         member.modifyPassword(passwordEncoder.encode(dto.getNewPassword()));

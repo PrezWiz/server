@@ -40,10 +40,10 @@ public class MemberService {
 
         if (isNull(email, password)) {
             log.error("잘못된 요청");
-            throw new BizBaseException(ErrorCode.INVALID_VALUE);
+            throw new BizBaseException(ErrorCode.EMPTY_EMAIL_OR_PASSWORD);
         } else if (isEmailDuplicate(email)) {
             log.error("중복 이메일");
-            throw new BizBaseException(ErrorCode.INVALID_VALUE);
+            throw new BizBaseException(ErrorCode.CONFLICT_EXIST_EMAIL);
         } else {
             String memberRole = role == null ? "user" : role;
             Member member = new Member(email, encoder.encode(password), memberRole);

@@ -37,10 +37,6 @@ public class SlideController {
 
     @PostMapping("/prez/slides/{presentationId}")
     @Operation(summary = "슬라이드 생성")
-    @ApiErrorCodeExample({
-            ErrorCode.MEMBER_NOT_FOUND,
-            ErrorCode.PRESENTATION_NOT_FOUND,
-            ErrorCode.INVALID_VALUE})
     public ResponseEntity<SlidesDto> createSlides(@RequestBody PrototypesDto prototypesDto, @PathVariable("presentationId") Long id) {
         SlidesDto slidesDto = prezService.makeSlide(prototypesDto, id);
         return ResponseEntity.ok(slidesDto);

@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.view.RedirectView;
+import prezwiz.server.common.exception.BizBaseException;
+import prezwiz.server.common.exception.ErrorCode;
 import prezwiz.server.dto.CustomUserInfoDto;
 import prezwiz.server.dto.kakao.KaKaoTokenDto;
 import prezwiz.server.dto.kakao.KaKaoUserInfoDto;
@@ -69,8 +71,8 @@ public class KaKaoAuthService {
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
                 .retrieve()
                 // Exception
-                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("Invalid Parameter")))
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.INVALID_VALUE)))
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.INTERNAL_SERVER_ERROR)))
                 .bodyToMono(KaKaoTokenDto.class)
                 .block();
 
@@ -95,8 +97,8 @@ public class KaKaoAuthService {
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
                 .retrieve()
                 // Exception
-                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("Invalid Parameter")))
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.INVALID_VALUE)))
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.INTERNAL_SERVER_ERROR)))
                 .bodyToMono(KaKaoUserInfoDto.class)
                 .block();
         return userInfo.getKaKaoAccount().getEmail();
