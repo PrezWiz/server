@@ -60,8 +60,8 @@ public class PrezServiceImpl implements PrezService {
     @Override
     @Transactional
     public SlidesDto makeSlide(PrototypesDto prototypesDto, Long presentationId) {
-        SlidesDto slidesDto = gptUtil.getSlides(prototypesDto);
         Presentation presentation = getMyPresentation(presentationId);
+        SlidesDto slidesDto = gptUtil.getSlides(prototypesDto);
 
         // 영속성 전이를 사용하지 않고 저장했음
         Slides slides = new Slides();
@@ -174,6 +174,10 @@ public class PrezServiceImpl implements PrezService {
     private Member getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContextHolderStrategy().getContext().getAuthentication();
         String currentUserEmail = authentication.getName();
-        return memberRepository.findMemberByEmail(currentUserEmail);
+        Member member = memberRepository.findMemberByEmail(currentUserEmail);
+        if (member == null) {
+            throw new BizBaseException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+        return member;
     }
 }

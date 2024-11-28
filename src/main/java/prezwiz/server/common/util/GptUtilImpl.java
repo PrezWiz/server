@@ -6,8 +6,11 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import prezwiz.server.common.exception.BizBaseException;
+import prezwiz.server.common.exception.ErrorCode;
 import prezwiz.server.dto.slide.SlidesDto;
 import prezwiz.server.dto.slide.gptapi.request.GPTRequest;
 import prezwiz.server.dto.slide.gptapi.request.Message;
@@ -122,6 +125,8 @@ public class GptUtilImpl implements GptUtil{
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON.toString())
                 .body(Mono.just(request), GPTRequest.class)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.GPT_API_CLIENT_ERROR)))
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.GPT_API_INTERNAL_ERROR)))
                 .bodyToMono(GPTResponse.class)
                 .block();
     }
