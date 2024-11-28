@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import prezwiz.server.common.adapter.PrezServiceAdapter;
+import prezwiz.server.common.annotation.ApiErrorCodeExample;
+import prezwiz.server.common.exception.ErrorCode;
 import prezwiz.server.dto.response.ScriptResponseDto;
 import prezwiz.server.dto.request.CreateOutlineRequestDto;
 import prezwiz.server.dto.response.PrototypeResponseDto;
@@ -20,7 +22,6 @@ import prezwiz.server.service.prez.PrezService;
 public class SlideController {
 
     private final PrezService prezService;
-    private final PrezServiceAdapter prezServiceAdapter;
 
     @PostMapping("/prez/prototype")
     @Operation(summary = "프로토타입 생성",
@@ -36,6 +37,10 @@ public class SlideController {
 
     @PostMapping("/prez/slides/{presentationId}")
     @Operation(summary = "슬라이드 생성")
+    @ApiErrorCodeExample({
+            ErrorCode.MEMBER_NOT_FOUND,
+            ErrorCode.PRESENTATION_NOT_FOUND,
+            ErrorCode.INVALID_VALUE})
     public ResponseEntity<SlidesDto> createSlides(@RequestBody PrototypesDto prototypesDto, @PathVariable("presentationId") Long id) {
         SlidesDto slidesDto = prezService.makeSlide(prototypesDto, id);
         return ResponseEntity.ok(slidesDto);
