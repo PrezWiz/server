@@ -3,6 +3,7 @@ package prezwiz.server.service.prez;
 import prezwiz.server.dto.response.PresentationsResponseDto;
 import prezwiz.server.dto.response.PrototypeResponseDto;
 import prezwiz.server.dto.slide.SlidesDto;
+import prezwiz.server.dto.slide.outline.OutlinesDto;
 import prezwiz.server.dto.slide.prototype.PrototypesDto;
 
 public interface PrezService {
@@ -10,8 +11,8 @@ public interface PrezService {
     Long makeTable();
 
     // Create
-    PrototypesDto makeOutline(String topic, Long presentationId);
-    SlidesDto makeSlide(PrototypesDto prototypesDto, Long presentationId);
+    OutlinesDto makeOutline(String topic, Long presentationId);
+    SlidesDto makeSlide(OutlinesDto prototypesDto, Long presentationId);
     String makeScript(SlidesDto slidesDto, Long presentationId);
 
     // Read

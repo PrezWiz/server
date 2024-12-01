@@ -26,7 +26,9 @@ public enum ErrorCode {
   // 5000~5999 : 서버에서 일어나는 오류 ( httpStatus 5xx )
   INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5000", "internal server error"),
   GPT_API_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5001", "gpt api와 통신중 오류가 발생했습니다. 5xx"),
-  GPT_API_CLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5002", "gpt api와 통신중 오류가 발생했습니다. 4xx");
+  GPT_API_CLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5002", "gpt api와 통신중 오류가 발생했습니다. 4xx"),
+  JSON_PARSE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5003", "json 응답을 파싱하는중 오류가 발생했습니다."),
+  OBJECT_MAPPING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5004", "객체를 json 으로 만드는 중 오류가 발생했습니다.");
 
   private final HttpStatus status;
   private final String code;

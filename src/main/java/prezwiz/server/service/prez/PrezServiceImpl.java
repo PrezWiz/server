@@ -10,17 +10,15 @@ import prezwiz.server.common.exception.ErrorCode;
 import prezwiz.server.common.util.GptUtil;
 import prezwiz.server.dto.response.PresentationResponseDto;
 import prezwiz.server.dto.response.PresentationsResponseDto;
-import prezwiz.server.dto.response.PrototypeResponseDto;
 import prezwiz.server.dto.slide.SlideDto;
 import prezwiz.server.dto.slide.SlidesDto;
-import prezwiz.server.dto.slide.prototype.PrototypesDto;
+import prezwiz.server.dto.slide.outline.OutlinesDto;
 import prezwiz.server.entity.*;
 import prezwiz.server.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,8 +42,8 @@ public class PrezServiceImpl implements PrezService {
 
     @Override
     @Transactional
-    public PrototypesDto makeOutline(String topic, Long presentationId) {
-        PrototypesDto prototypes = gptUtil.getPrototypes(topic);
+    public OutlinesDto makeOutline(String topic, Long presentationId) {
+        OutlinesDto outlines = gptUtil.getOutlines(topic);
 
         Optional<Presentation> presentationOptional = presentationRepository.findById(presentationId);
         Presentation presentation = presentationOptional.orElseThrow(() -> new BizBaseException(ErrorCode.PRESENTATION_NOT_FOUND));
@@ -54,14 +52,14 @@ public class PrezServiceImpl implements PrezService {
         presentation.setMember(getCurrentUser());
         presentationRepository.save(presentation);
 
-        return prototypes;
+        return outlines;
     }
 
     @Override
     @Transactional
-    public SlidesDto makeSlide(PrototypesDto prototypesDto, Long presentationId) {
+    public SlidesDto makeSlide(OutlinesDto outlinesDto, Long presentationId) {
         Presentation presentation = getMyPresentation(presentationId);
-        SlidesDto slidesDto = gptUtil.getSlides(prototypesDto);
+        SlidesDto slidesDto = gptUtil.getSlides(outlinesDto);
 
         // 영속성 전이를 사용하지 않고 저장했음
         Slides slides = new Slides();
