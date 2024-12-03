@@ -52,4 +52,8 @@ public class PrezServiceAdapter {
     public PresentationsResponseDto getSlides() {
         return prezService.getPresentations();
     }
+
+    public void deletePrez(Long presentationId) {
+        prezService.deletePrez(presentationId);
+    }
 }

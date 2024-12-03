@@ -135,7 +135,8 @@ public class PrezServiceImpl implements PrezService {
     @Override
     @Transactional
     public void deletePrez(Long presentationId) {
-        presentationRepository.deleteById(presentationId);
+        Presentation presentation = getMyPresentation(presentationId);
+        presentationRepository.delete(presentation);
     }
 
     /**
@@ -146,7 +147,7 @@ public class PrezServiceImpl implements PrezService {
 
         Presentation presentation = presentationOptional.orElseThrow(() -> new BizBaseException(ErrorCode.PRESENTATION_NOT_FOUND));
         Member currentUser = getCurrentUser();
-        if (presentation.getMember().getId() != currentUser.getId()) {
+        if (!presentation.getMember().getId().equals(currentUser.getId())) {
             throw new BizBaseException(ErrorCode.AUTH_INVALID_ACCESS_TOKEN);
         }
         return presentation;
