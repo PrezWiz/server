@@ -26,7 +26,7 @@ public class Contact {
     @Column
     private String message;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     Member member;
 
