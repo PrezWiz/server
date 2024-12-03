@@ -27,11 +27,11 @@ public class Presentation {
     @Column
     private String topic;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "SCRIPT_ID")
     private Script script;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "SLIDES_ID")
     private Slides slides;
 

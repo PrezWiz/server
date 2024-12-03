@@ -15,7 +15,8 @@ public class Slides {
     @Column(name = "SLIDES_ID")
     private Long id;
 
-    @OneToMany(mappedBy = "slides")
+    @OneToMany(mappedBy = "slides",
+            cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Slide> slideList = new ArrayList<>();
 
     public void addSlide(Slide slide) {

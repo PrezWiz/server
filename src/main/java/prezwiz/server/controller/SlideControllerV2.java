@@ -58,7 +58,7 @@ public class SlideControllerV2 {
     @PutMapping("/slides/{presentationId}")
     @Operation(summary = "슬라이드 수정")
     @ApiErrorCodeExample({ErrorCode.PRESENTATION_NOT_FOUND, ErrorCode.MEMBER_NOT_FOUND, ErrorCode.AUTH_INVALID_ACCESS_TOKEN})
-    public void updateSlideDataV2(@RequestBody SlidesDto slidesDto, @PathVariable("presentationId") Long id) {
+    public void updateSlideData(@RequestBody SlidesDto slidesDto, @PathVariable("presentationId") Long id) {
         prezServiceAdapter.updateSlide(id, slidesDto);
     }
 
@@ -76,10 +76,17 @@ public class SlideControllerV2 {
     }
 
     @GetMapping("/store")
-    @Operation(summary = "모든 슬라이드 정보 가져오기")
+    @Operation(summary = "모든 프레젠테이션 정보 가져오기")
     @ApiErrorCodeExample({ErrorCode.MEMBER_NOT_FOUND})
     public ResponseEntity<PresentationsResponseDto> getPresentation() {
         PresentationsResponseDto presentations = prezServiceAdapter.getSlides();
         return ResponseEntity.ok(presentations);
+    }
+
+    @DeleteMapping("/store/{presentationId}")
+    @Operation(summary = "프레젠테이션 지우기")
+    @ApiErrorCodeExample({ErrorCode.MEMBER_NOT_FOUND, ErrorCode.AUTH_INVALID_ACCESS_TOKEN, ErrorCode.PRESENTATION_NOT_FOUND})
+    public void deletePresentation(@PathVariable("presentationId") Long id) {
+        prezServiceAdapter.deletePrez(id);
     }
 }

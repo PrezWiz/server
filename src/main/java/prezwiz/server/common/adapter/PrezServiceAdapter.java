@@ -25,33 +25,14 @@ public class PrezServiceAdapter {
 
         // table 생성
         Long presentationId = prezService.makeTable();
-        PrototypesDto prototypesDto = prezService.makeOutline(topic, presentationId);
+        // outline 생성
+        OutlinesDto outlinesDto = prezService.makeOutline(topic, presentationId);
 
-        OutlineResponseDto outlineResponseDto = new OutlineResponseDto();
-        List<OutlineDto> outlines = new ArrayList<>();
-
-        prototypesDto.getSlides().forEach(
-                prototypeDto -> {
-                    outlines.add(new OutlineDto(prototypeDto.getSlideNumber(), prototypeDto.getTitle(), prototypeDto.getTitle()));
-                }
-        );
-
-        outlineResponseDto.setPresentationId(presentationId);
-        outlineResponseDto.setOutlines(outlines);
-        return outlineResponseDto;
+        return new OutlineResponseDto(presentationId, outlinesDto.getOutlines());
     }
 
     public SlidesDto slide(OutlinesDto outlinesDto, Long presentationId) {
-
-        PrototypesDto prototypesDto = new PrototypesDto();
-        List<PrototypeDto> prototypes = new ArrayList<>();
-
-        List<OutlineDto> outlines = outlinesDto.getOutlines();
-        outlines.forEach(outline -> {
-            prototypes.add(new PrototypeDto(outline.getOutlineNumber(), outline.getTitle(), outline.getDescription()));
-        });
-        prototypesDto.setSlides(prototypes);
-        return prezService.makeSlide(prototypesDto, presentationId);
+        return prezService.makeSlide(outlinesDto, presentationId);
     }
 
     public void updateSlide(Long id, SlidesDto slides) {
@@ -70,5 +51,9 @@ public class PrezServiceAdapter {
 
     public PresentationsResponseDto getSlides() {
         return prezService.getPresentations();
+    }
+
+    public void deletePrez(Long presentationId) {
+        prezService.deletePrez(presentationId);
     }
 }

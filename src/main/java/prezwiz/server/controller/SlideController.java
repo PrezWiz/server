@@ -12,8 +12,14 @@ import prezwiz.server.dto.response.ScriptResponseDto;
 import prezwiz.server.dto.request.CreateOutlineRequestDto;
 import prezwiz.server.dto.response.PrototypeResponseDto;
 import prezwiz.server.dto.slide.SlidesDto;
+import prezwiz.server.dto.slide.outline.OutlineDto;
+import prezwiz.server.dto.slide.outline.OutlinesDto;
+import prezwiz.server.dto.slide.prototype.PrototypeDto;
 import prezwiz.server.dto.slide.prototype.PrototypesDto;
 import prezwiz.server.service.prez.PrezService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Tag(name="slide", description="슬라이드 관련 controller")
 @RestController
@@ -30,7 +36,15 @@ public class SlideController {
                     "\n 이후에 slide를 생성하거나, script를 생성할때 url경로에 같이 보내줘야 합니다.")
     public ResponseEntity<PrototypeResponseDto> createPrototype(@RequestBody CreateOutlineRequestDto request) {
         Long id = prezService.makeTable();
-        PrototypesDto prototypesDto = prezService.makeOutline(request.getTopic(), id);
+        OutlinesDto outlinesDto = prezService.makeOutline(request.getTopic(), id);
+        PrototypesDto prototypesDto = new PrototypesDto();
+        List<PrototypeDto> prototypes = new ArrayList<>();
+
+        for (OutlineDto outline : outlinesDto.getOutlines()) {
+            prototypes.add(new PrototypeDto(outline.getOutlineNumber(), outline.getTitle(), outline.getDescription()));
+        }
+        prototypesDto.setSlides(prototypes);
+
         PrototypeResponseDto responseDto = new PrototypeResponseDto(id, prototypesDto);
         return ResponseEntity.ok(responseDto);
     }
@@ -38,7 +52,15 @@ public class SlideController {
     @PostMapping("/prez/slides/{presentationId}")
     @Operation(summary = "슬라이드 생성")
     public ResponseEntity<SlidesDto> createSlides(@RequestBody PrototypesDto prototypesDto, @PathVariable("presentationId") Long id) {
-        SlidesDto slidesDto = prezService.makeSlide(prototypesDto, id);
+        OutlinesDto outlinesDto = new OutlinesDto();
+        List<OutlineDto> outlines = new ArrayList<>();
+
+        for (PrototypeDto prototype : prototypesDto.getSlides()) {
+            outlines.add(new OutlineDto(prototype.getSlideNumber(), prototype.getTitle(), prototype.getDescription()));
+        }
+        outlinesDto.setOutlines(outlines);
+
+        SlidesDto slidesDto = prezService.makeSlide(outlinesDto, id);
         return ResponseEntity.ok(slidesDto);
     }
 

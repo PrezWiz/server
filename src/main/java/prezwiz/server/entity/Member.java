@@ -47,7 +47,10 @@ public class Member {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "member")
+    // 영속성 전이를 위한 cascade = All,
+    // 고아객체 삭제를 위한 orphanRemoval = true
+    @OneToMany(mappedBy = "member",
+            cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Presentation> presentations = new ArrayList<>();
 
     // 발표자료 추가 메서드

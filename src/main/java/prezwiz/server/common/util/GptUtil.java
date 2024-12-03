@@ -1,6 +1,7 @@
 package prezwiz.server.common.util;
 
 import prezwiz.server.dto.slide.SlidesDto;
+import prezwiz.server.dto.slide.outline.OutlinesDto;
 import prezwiz.server.dto.slide.prototype.PrototypesDto;
 
 /**
@@ -8,9 +9,9 @@ import prezwiz.server.dto.slide.prototype.PrototypesDto;
  */
 public interface GptUtil {
 
-    PrototypesDto getPrototypes(String topic);
+    OutlinesDto getOutlines(String topic);
 
-    SlidesDto getSlides(PrototypesDto prototypes);
+    SlidesDto getSlides(OutlinesDto outlinesDto);
 
     String getScript(SlidesDto slides);
 }

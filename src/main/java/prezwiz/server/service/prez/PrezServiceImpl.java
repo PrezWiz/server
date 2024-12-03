@@ -10,10 +10,9 @@ import prezwiz.server.common.exception.ErrorCode;
 import prezwiz.server.common.util.GptUtil;
 import prezwiz.server.dto.response.PresentationResponseDto;
 import prezwiz.server.dto.response.PresentationsResponseDto;
-import prezwiz.server.dto.response.PrototypeResponseDto;
 import prezwiz.server.dto.slide.SlideDto;
 import prezwiz.server.dto.slide.SlidesDto;
-import prezwiz.server.dto.slide.prototype.PrototypesDto;
+import prezwiz.server.dto.slide.outline.OutlinesDto;
 import prezwiz.server.entity.*;
 import prezwiz.server.repository.*;
 
@@ -30,8 +29,6 @@ public class PrezServiceImpl implements PrezService {
     private final GptUtil gptUtil;
     private final MemberRepository memberRepository;
     private final PresentationRepository presentationRepository;
-    private final SlidesRepository slidesRepository;
-    private final SlideRepository slideRepository;
     private final ScriptRepository scriptRepository;
 
     @Override
@@ -44,8 +41,8 @@ public class PrezServiceImpl implements PrezService {
 
     @Override
     @Transactional
-    public PrototypesDto makeOutline(String topic, Long presentationId) {
-        PrototypesDto prototypes = gptUtil.getPrototypes(topic);
+    public OutlinesDto makeOutline(String topic, Long presentationId) {
+        OutlinesDto outlines = gptUtil.getOutlines(topic);
 
         Optional<Presentation> presentationOptional = presentationRepository.findById(presentationId);
         Presentation presentation = presentationOptional.orElseThrow(() -> new BizBaseException(ErrorCode.PRESENTATION_NOT_FOUND));
@@ -54,52 +51,44 @@ public class PrezServiceImpl implements PrezService {
         presentation.setMember(getCurrentUser());
         presentationRepository.save(presentation);
 
-        return prototypes;
+        return outlines;
     }
 
     @Override
     @Transactional
-    public SlidesDto makeSlide(PrototypesDto prototypesDto, Long presentationId) {
+    public SlidesDto makeSlide(OutlinesDto outlinesDto, Long presentationId) {
         Presentation presentation = getMyPresentation(presentationId);
-        SlidesDto slidesDto = gptUtil.getSlides(prototypesDto);
+        SlidesDto slidesDto = gptUtil.getSlides(outlinesDto);
 
-        // 영속성 전이를 사용하지 않고 저장했음
         Slides slides = new Slides();
-        slidesDto.getSlides().stream().forEach(slideDto -> {
-            Slide slide = new Slide(slideDto.getTitle(), slideDto.getContent());
-            slides.addSlide(slide);
-            slideRepository.save(slide);
-        });
         presentation.addSlides(slides);
-        slidesRepository.save(slides);
-
+        slidesDto.getSlides().forEach(slideDto -> {
+            slides.addSlide(new Slide(slideDto.getTitle(), slideDto.getContent()));
+        });
         return slidesDto;
     }
 
     @Override
     @Transactional
     public String makeScript(SlidesDto slidesDto, Long presentationId) {
+        // Script entity 생성
         String scriptString = gptUtil.getScript(slidesDto);
-        Presentation presentation = getMyPresentation(presentationId);
-
         Script script = new Script(scriptString);
+
+        // Script entity 저장
+        Presentation presentation = getMyPresentation(presentationId);
         presentation.addScript(script);
-        scriptRepository.save(script);
         return scriptString;
     }
 
     @Override
     public SlidesDto getSlide(Long presentationId) {
         Presentation presentation = getMyPresentation(presentationId);
+        List<SlideDto> slideDtoList = presentation.getSlides().getSlideList().stream().map(
+                slide -> new SlideDto(slide.getTitle(), slide.getContent())
+        ).collect(Collectors.toList());
 
-        Slides slides = presentation.getSlides();
-        SlidesDto slidesDto = new SlidesDto();
-        List<SlideDto> slideDtoList = new ArrayList<>();
-        slides.getSlideList().forEach(slide -> {
-            slideDtoList.add(new SlideDto(slide.getTitle(), slide.getContent()));
-        });
-        slidesDto.setSlides(slideDtoList);
-        return slidesDto;
+        return new SlidesDto(slideDtoList);
     }
 
     @Override
@@ -126,16 +115,11 @@ public class PrezServiceImpl implements PrezService {
     public void updateSlide(Long presentationId, SlidesDto slidesDto) {
         Presentation presentation = getMyPresentation(presentationId);
 
-        Slides newSlides = new Slides();
-        List<Slide> newSlideList = newSlides.getSlideList();
-        slidesRepository.save(newSlides);
+        Slides slides = presentation.getSlides();
+        slides.getSlideList().clear();
         slidesDto.getSlides().forEach(slideDto -> {
-            Slide slide = new Slide(slideDto.getTitle(), slideDto.getContent());
-            slide.setSlides(newSlides);
-            newSlideList.add(slide);
-            slideRepository.save(slide);
+            slides.addSlide(new Slide(slideDto.getTitle(), slideDto.getContent()));
         });
-        presentation.updateSlides(newSlides);
     }
 
     @Override
@@ -151,7 +135,8 @@ public class PrezServiceImpl implements PrezService {
     @Override
     @Transactional
     public void deletePrez(Long presentationId) {
-        presentationRepository.deleteById(presentationId);
+        Presentation presentation = getMyPresentation(presentationId);
+        presentationRepository.delete(presentation);
     }
 
     /**
@@ -162,7 +147,7 @@ public class PrezServiceImpl implements PrezService {
 
         Presentation presentation = presentationOptional.orElseThrow(() -> new BizBaseException(ErrorCode.PRESENTATION_NOT_FOUND));
         Member currentUser = getCurrentUser();
-        if (presentation.getMember().getId() != currentUser.getId()) {
+        if (!presentation.getMember().getId().equals(currentUser.getId())) {
             throw new BizBaseException(ErrorCode.AUTH_INVALID_ACCESS_TOKEN);
         }
         return presentation;
