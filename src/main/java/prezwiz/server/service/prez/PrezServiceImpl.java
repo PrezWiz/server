@@ -19,6 +19,7 @@ import prezwiz.server.repository.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +29,6 @@ public class PrezServiceImpl implements PrezService {
     private final GptUtil gptUtil;
     private final MemberRepository memberRepository;
     private final PresentationRepository presentationRepository;
-    private final SlidesRepository slidesRepository;
-    private final SlideRepository slideRepository;
     private final ScriptRepository scriptRepository;
 
     @Override
@@ -61,43 +60,35 @@ public class PrezServiceImpl implements PrezService {
         Presentation presentation = getMyPresentation(presentationId);
         SlidesDto slidesDto = gptUtil.getSlides(outlinesDto);
 
-        // 영속성 전이를 사용하지 않고 저장했음
         Slides slides = new Slides();
-        slidesDto.getSlides().stream().forEach(slideDto -> {
-            Slide slide = new Slide(slideDto.getTitle(), slideDto.getContent());
-            slides.addSlide(slide);
-            slideRepository.save(slide);
-        });
         presentation.addSlides(slides);
-        slidesRepository.save(slides);
-
+        slidesDto.getSlides().forEach(slideDto -> {
+            slides.addSlide(new Slide(slideDto.getTitle(), slideDto.getContent()));
+        });
         return slidesDto;
     }
 
     @Override
     @Transactional
     public String makeScript(SlidesDto slidesDto, Long presentationId) {
+        // Script entity 생성
         String scriptString = gptUtil.getScript(slidesDto);
-        Presentation presentation = getMyPresentation(presentationId);
-
         Script script = new Script(scriptString);
+
+        // Script entity 저장
+        Presentation presentation = getMyPresentation(presentationId);
         presentation.addScript(script);
-        scriptRepository.save(script);
         return scriptString;
     }
 
     @Override
     public SlidesDto getSlide(Long presentationId) {
         Presentation presentation = getMyPresentation(presentationId);
+        List<SlideDto> slideDtoList = presentation.getSlides().getSlideList().stream().map(
+                slide -> new SlideDto(slide.getTitle(), slide.getContent())
+        ).collect(Collectors.toList());
 
-        Slides slides = presentation.getSlides();
-        SlidesDto slidesDto = new SlidesDto();
-        List<SlideDto> slideDtoList = new ArrayList<>();
-        slides.getSlideList().forEach(slide -> {
-            slideDtoList.add(new SlideDto(slide.getTitle(), slide.getContent()));
-        });
-        slidesDto.setSlides(slideDtoList);
-        return slidesDto;
+        return new SlidesDto(slideDtoList);
     }
 
     @Override
@@ -124,16 +115,11 @@ public class PrezServiceImpl implements PrezService {
     public void updateSlide(Long presentationId, SlidesDto slidesDto) {
         Presentation presentation = getMyPresentation(presentationId);
 
-        Slides newSlides = new Slides();
-        List<Slide> newSlideList = newSlides.getSlideList();
-        slidesRepository.save(newSlides);
+        Slides slides = presentation.getSlides();
+        slides.getSlideList().clear();
         slidesDto.getSlides().forEach(slideDto -> {
-            Slide slide = new Slide(slideDto.getTitle(), slideDto.getContent());
-            slide.setSlides(newSlides);
-            newSlideList.add(slide);
-            slideRepository.save(slide);
+            slides.addSlide(new Slide(slideDto.getTitle(), slideDto.getContent()));
         });
-        presentation.updateSlides(newSlides);
     }
 
     @Override

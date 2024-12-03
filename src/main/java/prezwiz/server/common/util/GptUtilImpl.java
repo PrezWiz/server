@@ -63,9 +63,9 @@ public class GptUtilImpl implements GptUtil{
                 "JSON 형식은 반드시 아래 형식을 따르세요:\n" +
                         "{\n" +
                         "  \"outlines\": [\n" +
-                        "    {\"outline_number\": 0, \"title\": \"PPT 제목\", \"description\": \"프레젠테이션의 전체적인 주제 설명\"},\n" +
-                        "    {\"outline_number\": 1, \"title\": \"목차\", \"description\": \"\"},\n" +
-                        "    {\"outline_number\": 2, \"title\": \"슬라이드 제목\", \"description\": \"슬라이드에 대한 간단한 설명\"}\n" +
+                        "    {\"outline_number\": 1, \"title\": \"PPT 제목\", \"description\": \"프레젠테이션의 전체적인 주제 설명\"},\n" +
+                        "    {\"outline_number\": 2, \"title\": \"목차\", \"description\": \"\"},\n" +
+                        "    {\"outline_number\": 3, \"title\": \"슬라이드 제목\", \"description\": \"슬라이드에 대한 간단한 설명\"}\n" +
                         "  ]\n" +
                         "}\n" +
                         "첫 번째 아웃라인은 PPT 제목을 포함하고, 두 번째 아웃라인은 목차로 구성하되, " +

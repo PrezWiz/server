@@ -1,10 +1,8 @@
 package prezwiz.server.service.prez;
 
 import prezwiz.server.dto.response.PresentationsResponseDto;
-import prezwiz.server.dto.response.PrototypeResponseDto;
 import prezwiz.server.dto.slide.SlidesDto;
 import prezwiz.server.dto.slide.outline.OutlinesDto;
-import prezwiz.server.dto.slide.prototype.PrototypesDto;
 
 public interface PrezService {
 
