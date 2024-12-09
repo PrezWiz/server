@@ -61,9 +61,8 @@ public class MemberController {
     @DeleteMapping("/member")
     @Operation(summary = "회원탈퇴")
     @ApiErrorCodeExample({ErrorCode.MEMBER_NOT_FOUND})
-    public ResponseDto withdraw(@AuthenticationPrincipal UserDetails userDetails) {
-        String email = userDetails.getUsername();
-        return authService.withdraw(email);
+    public ResponseDto withdraw() {
+        return authService.withdraw();
     }
 
     /**
@@ -72,10 +71,8 @@ public class MemberController {
     @PatchMapping("/member/password")
     @Operation(summary = "비밀번호 수정")
     @ApiErrorCodeExample({ErrorCode.MEMBER_NOT_FOUND, ErrorCode.PASSWORD_NOT_MATCH})
-    public ResponseDto modifyPassword(@AuthenticationPrincipal UserDetails userDetails,
-                                      @RequestBody AuthDto.ModifyPasswordReq dto) {
-        String email = userDetails.getUsername();
-        return authService.modifyPassword(email, dto);
+    public ResponseDto modifyPassword(@RequestBody AuthDto.ModifyPasswordReq dto) {
+        return authService.modifyPassword(dto);
     }
 
 

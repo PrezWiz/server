@@ -67,4 +67,9 @@ public class Member {
         if (!StringUtils.hasText(password)) throw new IllegalArgumentException("password must not empty");
         this.password = password;
     }
+
+    public void rejoin(String password) {
+        this.isActive = true;
+        this.password = password;
+    }
 }

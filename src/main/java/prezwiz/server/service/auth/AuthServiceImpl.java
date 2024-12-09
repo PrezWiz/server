@@ -2,9 +2,10 @@ package prezwiz.server.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,25 +65,18 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseDto withdraw(String email) {
-        Member member = memberRepository.findMemberByEmail(email);
+    public ResponseDto withdraw() {
+        Member member = getCurrentUser();
 
-        if (member == null){
-            throw new BizBaseException(ErrorCode.MEMBER_NOT_FOUND);
-        }
-
+        // 해당 member의 모든 presentation와의 연관관계를 끊음 -> 고아 엔티티 삭제
+        member.getPresentations().clear();
         member.withdraw();
         return ResponseDto.ok();
     }
 
     @Override
-    public ResponseDto modifyPassword(String email, AuthDto.ModifyPasswordReq dto) {
-        Member member = memberRepository.findMemberByEmail(email);
-
-        if (member == null){
-            throw new BizBaseException(ErrorCode.MEMBER_NOT_FOUND);
-        }
-
+    public ResponseDto modifyPassword(AuthDto.ModifyPasswordReq dto) {
+        Member member = getCurrentUser();
 
         if (!passwordEncoder.matches(dto.getCurrentPassword(), member.getPassword())){
             throw new BizBaseException(ErrorCode.PASSWORD_NOT_MATCH);
@@ -90,5 +84,18 @@ public class AuthServiceImpl implements AuthService {
 
         member.modifyPassword(passwordEncoder.encode(dto.getNewPassword()));
         return ResponseDto.ok();
+    }
+
+    /**
+     * 현재 로그인 되어있는 유저를 가져오기 위한 private methode
+     */
+    private Member getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContextHolderStrategy().getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+        Member member = memberRepository.findMemberByEmail(currentUserEmail);
+        if (member == null) {
+            throw new BizBaseException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+        return member;
     }
 }
