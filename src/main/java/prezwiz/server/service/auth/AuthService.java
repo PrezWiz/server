@@ -10,6 +10,6 @@ import prezwiz.server.dto.response.ResponseDto;
  */
 public interface AuthService {
     ResponseEntity<ResponseDto> login(LoginRequestDto request);
-    ResponseDto withdraw(String email);
-    ResponseDto modifyPassword(String email, AuthDto.ModifyPasswordReq dto);
+    ResponseDto withdraw();
+    ResponseDto modifyPassword(AuthDto.ModifyPasswordReq dto);
 }

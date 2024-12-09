@@ -2,6 +2,7 @@ package prezwiz.server.common.adapter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import prezwiz.server.dto.response.PresentationsResponseDto;
 import prezwiz.server.dto.response.OutlineResponseDto;
 import prezwiz.server.dto.response.ScriptResponseDto;
@@ -21,6 +22,7 @@ public class PrezServiceAdapter {
 
     private final PrezService prezService;
 
+    @Transactional
     public OutlineResponseDto outline(String topic) {
 
         // table 생성
