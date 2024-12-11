@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import prezwiz.server.dto.CustomUserInfoDto;
 
 import java.security.Key;
+import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
@@ -40,13 +41,14 @@ public class JwtUtil {
         claims.put("email", member.getEmail());
         claims.put("role", member.getRole());
 
-        ZonedDateTime now = ZonedDateTime.now();
+        // 시스템 기본 시간대 기준으로 현재 시간 가져오기
+        ZonedDateTime now = ZonedDateTime.now(Clock.systemDefaultZone());
         ZonedDateTime tokenValidity = now.plusSeconds(expireTime);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(Date.from(now.toInstant()))
-                .setExpiration(Date.from(tokenValidity.toInstant()))
+                .setIssuedAt(Date.from(now.toInstant())) // 발급 시간
+                .setExpiration(Date.from(tokenValidity.toInstant())) // 만료 시간
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
