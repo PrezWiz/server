@@ -71,8 +71,8 @@ public class KaKaoAuthService {
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
                 .retrieve()
                 // Exception
-                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.INVALID_VALUE)))
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.INTERNAL_SERVER_ERROR)))
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.KAKAO_AUTH_CLIENT_ERROR)))
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.KAKAO_AUTH_INTERNAL_ERROR)))
                 .bodyToMono(KaKaoTokenDto.class)
                 .block();
 
@@ -97,8 +97,8 @@ public class KaKaoAuthService {
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
                 .retrieve()
                 // Exception
-                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.INVALID_VALUE)))
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.INTERNAL_SERVER_ERROR)))
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.KAKAO_AUTH_CLIENT_ERROR)))
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new BizBaseException(ErrorCode.KAKAO_AUTH_INTERNAL_ERROR)))
                 .bodyToMono(KaKaoUserInfoDto.class)
                 .block();
         return userInfo.getKaKaoAccount().getEmail();

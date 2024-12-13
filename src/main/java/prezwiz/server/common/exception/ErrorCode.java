@@ -28,7 +28,9 @@ public enum ErrorCode {
   GPT_API_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5001", "gpt api와 통신중 오류가 발생했습니다. 5xx"),
   GPT_API_CLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5002", "gpt api와 통신중 오류가 발생했습니다. 4xx"),
   JSON_PARSE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5003", "json 응답을 파싱하는중 오류가 발생했습니다."),
-  OBJECT_MAPPING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5004", "객체를 json 으로 만드는 중 오류가 발생했습니다.");
+  OBJECT_MAPPING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5004", "객체를 json 으로 만드는 중 오류가 발생했습니다."),
+  KAKAO_AUTH_CLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5005", "카카오 로그인중 오류 발생 4xx"),
+  KAKAO_AUTH_INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5006", "카카오 로그인중 오류 발생 5xx");
 
   private final HttpStatus status;
   private final String code;
