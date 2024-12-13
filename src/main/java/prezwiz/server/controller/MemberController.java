@@ -81,7 +81,7 @@ public class MemberController {
      */
     @GetMapping("/kakaoauth")
     @Operation(summary = "카카오 로그인")
-    @ApiErrorCodeExample({ErrorCode.INVALID_VALUE})
+    @ApiErrorCodeExample({ErrorCode.KAKAO_AUTH_CLIENT_ERROR, ErrorCode.KAKAO_AUTH_INTERNAL_ERROR})
     public RedirectView kakaoLogin(@RequestParam String code, HttpServletResponse response) {
         return kaKaoAuthService.kakaoAuth(code, response);
     }
