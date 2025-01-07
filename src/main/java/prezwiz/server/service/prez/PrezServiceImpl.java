@@ -103,10 +103,13 @@ public class PrezServiceImpl implements PrezService {
     public PresentationsResponseDto getPresentations() {
         Member currentUser = getCurrentUser();
         List<Presentation> presentations = currentUser.getPresentations();
-        List<PresentationResponseDto> presentationResponseDtoList =
-                presentations.stream().map(
-                        presentation -> new PresentationResponseDto(presentation.getId(), presentation.getTopic(), presentation.getCreatedAt())
-                        ).toList();
+        List<PresentationResponseDto> presentationResponseDtoList = new ArrayList<>();
+        for (Presentation presentation : presentations) {
+            if (presentation.getSlides() != null) {
+                presentationResponseDtoList.add(
+                        new PresentationResponseDto(presentation.getId(), presentation.getTopic(), presentation.getCreatedAt()));
+            }
+        }
         return new PresentationsResponseDto(presentationResponseDtoList);
     }
 
